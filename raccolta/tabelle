@@ -6,3 +6,16 @@ nome VARCHAR(50) NOT NULL ,
 stelleMichelin int CHECK (stelleMichelin>=O AND stelleMichelin<=3),
 UNIQUE (partitaIva,nome)
 );
+
+
+
+
+CREATE TABLE Chef (
+codFiscale VARCHAR(16) PRIMARY KEY ,
+nome VARCHAR(50) NOT NULL,
+cognome VARCHAR(50) NOT NULL,
+dataNascita DATE ,
+Email varchar(60)  UNIQUE CHECK (Email ~* '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$') ,
+anniEsperienza INT ,
+disponibilita BOOL  
+) ;
