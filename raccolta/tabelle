@@ -62,26 +62,26 @@ stato BOOL NOT NULL
 ) ;
 
 
-// DA FINIRE 
-CREATE TYPE tipoSessione AS ENUM ('inPresenza', 'online');
 
 CREATE TABLE Sessione (
 idSessione INT PRIMARY KEY, 
+idCorsoCucina INT NOT NULL REFERENCES corsoCucina(idCorsoCucina), 
 dataInizioSessione TIMESTAMP NOT NULL, 
 dataFineSessione TIMESTAMP NOT NULL, 
 tipo tipoSessione NOT NULL, 
 piattaformaStreaming VARCHAR(50),
 via VARCHAR(100),
 citta VARCHAR(100),
-cap VARCHAR(5),
-numeroPosti int CHECK (numeroPosti>0) ,
-CHECK (cap ~ '^[0-9]{5}$'),
-
-CHECK (
-        (tipo = 'online' AND piattaformaStreaming IS NOT NULL AND via IS NULL AND citta IS NULL AND cap IS NULL AND numeroPosti IS NULL) OR
+cap VARCHAR(5)   CHECK (cap IS NULL OR cap ~ '^[0-9]{5}$') ,
+numeroPosti INT CHECK (numeroPosti IS NULL OR numeroPosti > 0),
+    
+  CHECK (
+        (tipo = 'online' AND piattaformaStreaming IS NOT NULL AND via IS NULL AND citta IS NULL AND cap IS NULL AND numeroPosti IS NULL)
+        OR
         (tipo = 'inPresenza' AND piattaformaStreaming IS NULL AND via IS NOT NULL AND citta IS NOT NULL AND cap IS NOT NULL AND numeroPosti IS NOT NULL)
     ),
-CHECK (dataInizioSessione < dataFineSessione)
+    
+ CHECK (dataInizioSessione < dataFineSessione)
 );
 
 
