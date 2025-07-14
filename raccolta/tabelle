@@ -1,4 +1,4 @@
-CREATE TABLE Ristorante (
+CREATE TABLE ristorante (
 idRistorante INT PRIMARY KEY  ,
 partitaIva VARCHAR(13) UNIQUE NOT NULL ,
 via VARCHAR(100) ,
@@ -10,7 +10,7 @@ UNIQUE (partitaIva,nome)
 
 
 
-CREATE TABLE Chef (
+CREATE TABLE chef (
 codFiscale VARCHAR(16) PRIMARY KEY ,
 nome VARCHAR(50) NOT NULL,
 cognome VARCHAR(50) NOT NULL,
@@ -19,3 +19,28 @@ Email varchar(60)  UNIQUE CHECK (Email ~* '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a
 anniEsperienza INT ,
 disponibilita BOOL  
 ) ;
+
+
+CREATE TABLE lavora (
+    codFiscale VARCHAR(16) REFERENCES chef(codFiscale),
+    idRistorante INT REFERENCES ristorante(idRistorante),
+    PRIMARY KEY (codFiscale, idRistorante)
+);
+
+
+CREATE TYPE frequenza  AS ENUM ('ogniGiorno', 'ogniDueGiorni', 'settimanale' , 'biSettimanale', 'mensile', 'bimestrale','annuale');
+
+CREATE TABLE corsoCucina (
+idCorso INT PRIMARY KEY ,
+nomeCorso VARCHAR(50) NOT NULL ,
+argomento VARCHAR(50) NOT NULL,
+frequenzaCorso frequenza VARCHAR(50)NOT NULL
+prezzo INT NOT NULL CHECK(prezzo >=0),
+numeroPosti INT CHECK(numeroPosti > 0 )
+dataInizioCorso TIMESTAMP NOT NULL,
+dataFineCorso TIMESTAMP NOT NULL,
+CHECK (dataInizioCorso < dataFineCorso)
+);
+
+
+
