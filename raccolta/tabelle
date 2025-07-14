@@ -34,9 +34,9 @@ CREATE TABLE corsoCucina (
 idCorso INT PRIMARY KEY ,
 nomeCorso VARCHAR(50) NOT NULL ,
 argomento VARCHAR(50) NOT NULL,
-frequenzaCorso frequenza VARCHAR(50)NOT NULL
+frequenzaCorso frequenza NOT NULL ,
 prezzo INT NOT NULL CHECK(prezzo >=0),
-numeroPosti INT CHECK(numeroPosti > 0 )
+numeroPosti INT CHECK(numeroPosti > 0 ) ,
 dataInizioCorso TIMESTAMP NOT NULL,
 dataFineCorso TIMESTAMP NOT NULL,
 CHECK (dataInizioCorso < dataFineCorso)
