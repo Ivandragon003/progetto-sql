@@ -31,7 +31,7 @@ CREATE TABLE lavora (
 CREATE TYPE frequenza  AS ENUM ('ogniGiorno', 'ogniDueGiorni', 'settimanale' , 'biSettimanale', 'mensile', 'bimestrale','annuale');
 
 CREATE TABLE corsoCucina (
-idCorso INT PRIMARY KEY ,
+idCorsoCorso INT PRIMARY KEY ,
 nomeCorso VARCHAR(50) NOT NULL ,
 argomento VARCHAR(50) NOT NULL,
 frequenzaCorso frequenza NOT NULL ,
@@ -40,6 +40,48 @@ numeroPosti INT CHECK(numeroPosti > 0 ) ,
 dataInizioCorso TIMESTAMP NOT NULL,
 dataFineCorso TIMESTAMP NOT NULL,
 CHECK (dataInizioCorso < dataFineCorso)
+);
+
+
+
+CREATE TABLE utente (
+codFiscale VARCHAR(16) PRIMARY KEY ,
+nome VARCHAR(50) NOT NULL,
+cognome VARCHAR(50) NOT NULL,
+dataNascita DATE ,
+Email varchar(60)  UNIQUE CHECK (Email ~* '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$') 
+) ;
+
+
+CREATE TABLE iscritto (
+codFiscale VARCHAR(16) REFERENCES utente(codFiscale),
+idCorsoCucina INT REFERENCES corsoCucina (idCorsoCucina) ,
+PRIMARY KEY (codFiscale,idCorsoCucina),
+votiAvuti INT CHECK (votiAvuti>=0 AND votiAvuti<=10), 
+stato BOOL NOT NULL 
+) ;
+
+
+// DA FINIRE 
+CREATE TYPE tipoSessione AS ENUM ('inPresenza', 'online');
+
+CREATE TABLE Sessione (
+idSessione INT PRIMARY KEY, 
+dataInizioSessione TIMESTAMP NOT NULL, 
+dataFineSessione TIMESTAMP NOT NULL, 
+tipo tipoSessione NOT NULL, 
+piattaformaStreaming VARCHAR(50),
+via VARCHAR(100),
+citta VARCHAR(100),
+cap VARCHAR(5),
+numeroPosti int CHECK (numeroPosti>0) ,
+CHECK (cap ~ '^[0-9]{5}$'),
+
+CHECK (
+        (tipo = 'online' AND piattaformaStreaming IS NOT NULL AND via IS NULL AND citta IS NULL AND cap IS NULL AND numeroPosti IS NULL) OR
+        (tipo = 'inPresenza' AND piattaformaStreaming IS NULL AND via IS NOT NULL AND citta IS NOT NULL AND cap IS NOT NULL AND numeroPosti IS NOT NULL)
+    ),
+CHECK (dataInizioSessione < dataFineSessione)
 );
 
 
