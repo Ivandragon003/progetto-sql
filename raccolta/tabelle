@@ -3,7 +3,7 @@ idRistorante INT PRIMARY KEY  ,
 partitaIva VARCHAR(13) UNIQUE NOT NULL ,
 via VARCHAR(100) ,
 nome VARCHAR(50) NOT NULL ,
-stelleMichelin int CHECK (stelleMichelin>=O AND stelleMichelin<=3),
+stelleMichelin int CHECK (stelleMichelin>=0 AND stelleMichelin<=3),
 UNIQUE (partitaIva,nome)
 );
 
