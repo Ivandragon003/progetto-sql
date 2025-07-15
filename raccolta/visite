@@ -10,3 +10,28 @@ FROM corsoCucina c
 JOIN iscritto i ON c.idCorsoCucina = i.idCorsoCucina
 JOIN utente u ON i.codFiscale = u.codFiscale
 WHERE i.stato = TRUE;
+
+
+
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+CREATE OR REPLACE VIEW VistaPartecipantiInPresenza AS
+SELECT 
+    u.codFiscale,
+    u.nome,
+    u.cognome,
+    s.idSessione,
+    s.dataInizioSessione,
+    s.dataFineSessione,
+    s.idCorsoCucina
+FROM 
+    Adesione a
+JOIN 
+    Sessione s ON a.idSessione = s.idSessione
+JOIN 
+    Utente u ON a.codFiscale = u.codFiscale
+WHERE 
+    s.tipo = 'inPresenza'
+    AND a.stato = TRUE ;
+
