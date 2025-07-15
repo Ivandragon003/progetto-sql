@@ -78,3 +78,36 @@ BEFORE INSERT OR UPDATE ON Sessione
 FOR EACH ROW
 EXECUTE FUNCTION checkIntervalloSessione();
 
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+CREATE OR REPLACE FUNCTION checkPostiCorso()
+RETURNS TRIGGER AS $$
+DECLARE
+    max_posti INT;
+    numeroIscritti INT;
+BEGIN
+    SELECT numeroPosti INTO max_posti
+    FROM corsoCucina
+    WHERE idCorsoCucina = NEW.idCorsoCucina;
+
+    SELECT COUNT(*) INTO numeroIscritti
+    FROM iscritto
+    WHERE idCorsoCucina = NEW.idCorsoCucina AND stato = TRUE;
+
+    IF numeroIscritti >= max_posti THEN
+        NEW.stato := FALSE;  
+    ELSE
+        NEW.stato := TRUE;  
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_checkPostiCorso
+BEFORE INSERT ON iscritto
+FOR EACH ROW
+EXECUTE FUNCTION checkPostiCorso();
+
+
+
