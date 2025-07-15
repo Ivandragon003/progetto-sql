@@ -44,7 +44,7 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER trg_checkCorsoUtente
 AFTER DELETE ON iscritto 
 FOR EACH ROW
-EXECUTE FUNCTION checkCorsoUtente();ù
+EXECUTE FUNCTION checkCorsoUtente();
 
 
 
@@ -109,5 +109,35 @@ BEFORE INSERT ON iscritto
 FOR EACH ROW
 EXECUTE FUNCTION checkPostiCorso();
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+CREATE OR REPLACE FUNCTION cucinaRicetta ()
+RETURNS TRIGGERS AS $$
+DECLARE
+	conta_ricette INT;
+BEGIN
+	SELECT COUNT(*) INTO conta_ricette
+	FROM ricetta
+	WHERE IdSessione = NEW.IdSessione;
+
+	IF NEW.tipo = 'inPresenza' THEN
+		IF conta_ricette = 0 THEN
+			RAISE EXCEPTION 
+			'Errore: una sessione in presenza deve avere almeno una ricetta associata';
+		END IF;
+
+	ELSIF NEW.tipo = 'online' THEN
+		IF conta_ricette > 0  THEN
+			RAISE EXCEPTION
+			'Errore: una sessione online non può avere ricette associate';
+		END IF;
+	END IF;
+
+	RETURN NEW;
+END;
+$$ LANGUAGE plpgsql; 
+		
 
 
