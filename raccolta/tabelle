@@ -22,8 +22,8 @@ disponibilita BOOL
 
 
 CREATE TABLE lavora (
-    codFiscale VARCHAR(16) REFERENCES chef(codFiscale),
-    idRistorante INT REFERENCES ristorante(idRistorante),
+    codFiscale VARCHAR(16) REFERENCES chef(codFiscale) ON DELETE CASCADE,
+    idRistorante INT REFERENCES ristorante(idRistorante) ON DELETE CASCADE,
     PRIMARY KEY (codFiscale, idRistorante)
 );
 
