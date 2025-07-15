@@ -22,7 +22,7 @@ BEFORE DELETE ON lavora
 FOR EACH ROW
 EXECUTE FUNCTION checkRistorante();
 
-
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 CREATE OR REPLACE FUNCTION checkCorsoUtente() 
 RETURNS TRIGGER AS $$
@@ -44,4 +44,37 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER trg_checkCorsoUtente
 AFTER DELETE ON iscritto 
 FOR EACH ROW
-EXECUTE FUNCTION checkCorsoUtente();
+EXECUTE FUNCTION checkCorsoUtente();ù
+
+
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+CREATE OR REPLACE FUNCTION checkIntervalloSessione()
+RETURNS TRIGGER AS $$
+DECLARE
+    inizio_corso TIMESTAMP;
+    fine_corso   TIMESTAMP;
+BEGIN
+    SELECT dataInizioCorso, dataFineCorso
+    INTO inizio_corso, fine_corso
+    FROM corsoCucina
+    WHERE idCorsoCucina = NEW.idCorsoCucina;
+
+    IF NOT (
+        inizio_corso <= NEW.dataInizioSessione AND NEW.dataFineSessione <= fine_corso) THEN
+        RAISE EXCEPTION 
+            'Le date della sessione (% → %) devono essere comprese nell’intervallo del corso (% → %)',
+            NEW.dataInizioSessione, NEW.dataFineSessione, inizio_corso, fine_corso;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER trg_checkIntervalloSessione
+BEFORE INSERT OR UPDATE ON Sessione
+FOR EACH ROW
+EXECUTE FUNCTION checkIntervalloSessione();
+
