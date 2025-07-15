@@ -34,4 +34,30 @@ JOIN
 WHERE 
     s.tipo = 'inPresenza'
     AND a.stato = TRUE ;
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+CREATE OR REPLACE VIEW QuantitaIngredientiRicetta AS 
+WITH partecipanti AS (
+    SELECT
+        v.idSessione,
+        COUNT(*) AS numPartecipanti
+    FROM
+        VistaPartecipantiInPresenza v
+    GROUP BY
+        v.idSessione
+)
+SELECT
+    i.idIngrediente,
+    i.nome AS nomeIngrediente,
+    SUM(p.numPartecipanti * u.quantita) AS quantita_totale
+FROM
+    Sessione s
+JOIN
+    Usa u ON s.idRicetta = u.idRicetta
+JOIN
+    Ingrediente i ON u.idIngrediente = i.idIngrediente
+JOIN
+    partecipanti p ON s.idSessione = p.idSessione
+GROUP BY
+    i.idIngrediente,
+    i.nome;
 
