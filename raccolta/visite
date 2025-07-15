@@ -1,1 +1,12 @@
-
+CREATE OR REPLACE VIEW iscritti_confermati_per_corso AS
+SELECT 
+    c.idCorsoCucina,
+    c.nomeCorso,
+    i.codFiscale,
+    u.nome,
+    u.cognome,
+    i.votiAvuti
+FROM corsoCucina c
+JOIN iscritto i ON c.idCorsoCucina = i.idCorsoCucina
+JOIN utente u ON i.codFiscale = u.codFiscale
+WHERE i.stato = TRUE;
