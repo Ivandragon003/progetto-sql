@@ -27,13 +27,22 @@ EXECUTE FUNCTION checkRistorante();
 CREATE OR REPLACE FUNCTION checkCorsoUtente() 
 RETURNS TRIGGER AS $$
 DECLARE 
-	cont INT ;
+    cont INT;
+    data_fine DATE;
 BEGIN 
-	SELECT COUNT(*) INTO cont
-	FROM iscritto
-	WHERE idCorsoCucina <>idCorsoCucina ;
-	IF cont = 0 THEN
-        DELETE FROM corsoCucina WHERE idCorsoCucina = OLD.idCorsoCucina;
+  
+    SELECT COUNT(*) INTO cont
+    FROM iscritto
+    WHERE idCorsoCucina = OLD.idCorsoCucina;
+
+    
+    SELECT dataFineCorso INTO data_fine
+    FROM corsoCucina
+    WHERE idCorsoCucina = OLD.idCorsoCucina;
+
+    IF cont = 0 AND data_fine < CURRENT_DATE THEN
+        DELETE FROM corsoCucina
+        WHERE idCorsoCucina = OLD.idCorsoCucina;
     END IF;
 
     RETURN NULL; 
@@ -45,7 +54,6 @@ CREATE TRIGGER trg_checkCorsoUtente
 AFTER DELETE ON iscritto 
 FOR EACH ROW
 EXECUTE FUNCTION checkCorsoUtente();
-
 
 
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
