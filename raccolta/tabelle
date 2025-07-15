@@ -85,6 +85,12 @@ numeroPosti INT CHECK (numeroPosti IS NULL OR numeroPosti > 0),
 );
 
 
+CREATE TABLE segue(
+idSessione INT REFERENCES Sessione(idSessione),
+codFiscale VARCHAR(16) REFERENCES Utente(codFiscale) ,
+PRIMARY KEY (idSessione,codFiscale)
+);
+
 CREATE TABLE ricetta (
 idRicetta INT PRIMARY KEY,
 nome VARCHAR(50) NOT NULL,
