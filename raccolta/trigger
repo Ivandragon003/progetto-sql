@@ -213,7 +213,7 @@ EXECUTE FUNCTION bloccoAdesioniOnline();
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 
-CREATE OR REPLACE FUNCTION checkRichieste()
+CREATE OR REPLACE FUNCTION checkDataRichieste()
 RETURNS TRIGGER AS $$
 DECLARE
     data_inizio TIMESTAMP;
@@ -230,10 +230,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trg_checkRichieste
+CREATE TRIGGER trg_checkDataRichieste
 BEFORE INSERT ON adesione
 FOR EACH ROW
-EXECUTE FUNCTION checkRichieste();
+EXECUTE FUNCTION checkDataRichieste();
 
 
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
