@@ -21,3 +21,27 @@ CREATE TRIGGER trg_checkRistorante
 BEFORE DELETE ON lavora
 FOR EACH ROW
 EXECUTE FUNCTION checkRistorante();
+
+
+
+CREATE OR REPLACE FUNCTION checkCorsoUtente() 
+RETURNS TRIGGER AS $$
+DECLARE 
+	cont INT ;
+BEGIN 
+	SELECT COUNT(*) INTO cont
+	FROM iscritto
+	WHERE idCorsoCucina <>idCorsoCucina ;
+	IF cont = 0 THEN
+        DELETE FROM corsoCucina WHERE idCorsoCucina = OLD.idCorsoCucina;
+    END IF;
+
+    RETURN NULL; 
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER trg_checkCorsoUtente
+AFTER DELETE ON iscritto 
+FOR EACH ROW
+EXECUTE FUNCTION checkCorsoUtente();
