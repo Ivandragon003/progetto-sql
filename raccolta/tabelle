@@ -87,6 +87,17 @@ numeroPosti INT CHECK (numeroPosti IS NULL OR numeroPosti > 0),
 );
 
 
+CREATE TABLE adesione (
+idSessione INT REFERENCES sessione(idSessione),
+codFiscale VARCHAR(16) REFERENCES utente(codFiscale),
+stato BOOL ,
+dataAdesione DATE ,
+PRIMARY KEY (idSessione,codFiscale)
+);
+
+
+
+
 CREATE TABLE segue(
 idSessione INT REFERENCES Sessione(idSessione),
 codFiscale VARCHAR(16) REFERENCES Utente(codFiscale) ,
@@ -99,6 +110,7 @@ CREATE TABLE tiene (
     idCorsoCucina INT REFERENCES corsoCucina(idCorsoCucina) ON DELETE CASCADE,
     PRIMARY KEY (codFiscale, idCorsoCucina)
 );
+
 
 
 CREATE TABLE ricetta (
