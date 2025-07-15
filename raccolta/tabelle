@@ -61,7 +61,7 @@ CONSTRAINT chk_codFiscale CHECK (
     CONSTRAINT formatoCodFiscaleUtente CHECK (
         codfiscale ~* '^[A-Z]{6}[0-9]{2}[A-Z][0-9]{2}[A-Z][0-9]{3}[A-Z]$'
     ),
-    PRIMARY KEY (codFiscale),
+   
     nome VARCHAR(50) NOT NULL,
     cognome VARCHAR(50) NOT NULL,
     dataNascita DATE,
