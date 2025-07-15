@@ -30,6 +30,7 @@ CREATE TABLE lavora (
 
 CREATE TYPE frequenza  AS ENUM ('ogniGiorno', 'ogniDueGiorni', 'settimanale' , 'biSettimanale', 'mensile', 'bimestrale','annuale');
 
+
 CREATE TABLE corsoCucina (
 idCorsoCucina INT PRIMARY KEY ,
 nomeCorso VARCHAR(50) NOT NULL ,
@@ -66,6 +67,7 @@ CREATE TYPE tipoSessione AS ENUM ('inPresenza', 'online');
 CREATE TABLE Sessione (
 idSessione INT PRIMARY KEY, 
 idCorsoCucina INT NOT NULL REFERENCES corsoCucina(idCorsoCucina), 
+idRicetta INT REFERENCES Ricetta(idRicetta),
 dataInizioSessione TIMESTAMP NOT NULL, 
 dataFineSessione TIMESTAMP NOT NULL, 
 tipo tipoSessione NOT NULL, 
@@ -76,9 +78,9 @@ cap VARCHAR(5)   CHECK (cap IS NULL OR cap ~ '^[0-9]{5}$') ,
 numeroPosti INT CHECK (numeroPosti IS NULL OR numeroPosti > 0),
     
   CHECK (
-        (tipo = 'online' AND piattaformaStreaming IS NOT NULL AND via IS NULL AND citta IS NULL AND cap IS NULL AND numeroPosti IS NULL)
+        (tipo = 'online' AND piattaformaStreaming IS NOT NULL AND via IS NULL AND citta IS NULL AND cap IS NULL AND numeroPosti IS NULL AND idRicetta IS NULL)
         OR
-        (tipo = 'inPresenza' AND piattaformaStreaming IS NULL AND via IS NOT NULL AND citta IS NOT NULL AND cap IS NOT NULL AND numeroPosti IS NOT NULL)
+        (tipo = 'inPresenza' AND piattaformaStreaming IS NULL AND via IS NOT NULL AND citta IS NOT NULL AND cap IS NOT NULL AND numeroPosti IS NOT NULL  AND idRicetta IS NOT NULL)
     ),
     
  CHECK (dataInizioSessione < dataFineSessione)
@@ -90,6 +92,14 @@ idSessione INT REFERENCES Sessione(idSessione),
 codFiscale VARCHAR(16) REFERENCES Utente(codFiscale) ,
 PRIMARY KEY (idSessione,codFiscale)
 );
+
+
+CREATE TABLE tiene (
+    codFiscale VARCHAR(16) REFERENCES chef(codFiscale) ON DELETE CASCADE,
+    idCorsoCucina INT REFERENCES corsoCucina(idCorsoCucina) ON DELETE CASCADE,
+    PRIMARY KEY (codFiscale, idCorsoCucina)
+);
+
 
 CREATE TABLE ricetta (
 idRicetta INT PRIMARY KEY,
