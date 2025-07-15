@@ -1,0 +1,10 @@
+CREATE OR REPLACE FUNCTION checkSessione()
+RETURNS VOID AS $$
+BEGIN
+    DELETE FROM Sessione s
+    WHERE s.dataInizioSessione < CURRENT_TIMESTAMP
+      AND NOT EXISTS (
+        SELECT 1 FROM segue sg WHERE sg.idSessione = s.idSessione
+      );
+END;
+$$ LANGUAGE plpgsql;
