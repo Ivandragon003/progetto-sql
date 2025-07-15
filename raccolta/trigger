@@ -206,3 +206,32 @@ CREATE TRIGGER trg_bloccoAdesioniOnline
 BEFORE INSERT ON adesione
 FOR EACH ROW
 EXECUTE FUNCTION bloccoAdesioniOnline();
+
+
+
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+
+CREATE OR REPLACE FUNCTION checkRichieste()
+RETURNS TRIGGER AS $$
+DECLARE
+    data_inizio TIMESTAMP;
+BEGIN
+    SELECT dataInizioSessione INTO data_inizio
+    FROM Sessione
+    WHERE idSessione = NEW.idSessione;
+
+    IF NEW.dataAdesione > data_inizio THEN
+        RAISE EXCEPTION 'Impossibile mandare adesione dopo l''inizio della sessione %', NEW.idSessione;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_checkRichieste
+BEFORE INSERT ON adesione
+FOR EACH ROW
+EXECUTE FUNCTION checkRichieste();
+
