@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW iscritti_confermati_per_corso AS
+CREATE OR REPLACE VIEW iscritti_confermati_corso AS
 SELECT 
     c.idCorsoCucina,
     c.nomeCorso,
