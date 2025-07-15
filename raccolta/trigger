@@ -184,4 +184,25 @@ BEFORE INSERT ON adesione
 FOR EACH ROW
 EXECUTE FUNCTION checkPostiSessione();
 
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\		
 
+
+CREATE OR REPLACE FUNCTION bloccoAdesioniOnline()
+RETURNS TRIGGER AS $$
+DECLARE
+    tipo_sessione tipoSessione;
+BEGIN
+    SELECT tipo INTO tipo_sessione FROM Sessione WHERE idSessione = NEW.idSessione;
+
+    IF tipo_sess != 'inPresenza' THEN
+        RAISE EXCEPTION 'Adesione permessa solo per sessioni in presenza';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_bloccoAdesioniOnline
+BEFORE INSERT ON adesione
+FOR EACH ROW
+EXECUTE FUNCTION bloccoAdesioniOnline();
