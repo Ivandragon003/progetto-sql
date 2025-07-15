@@ -164,7 +164,7 @@ BEGIN
     FROM adesione
     WHERE idSessione = NEW.idSessione AND stato = TRUE;
 
-    IF tipo_sess = 'inPresenza' THEN
+    IF tipo_sessione = 'inPresenza' THEN
         IF iscritti >= max_posti THEN
             NEW.stato := FALSE;
         ELSE
