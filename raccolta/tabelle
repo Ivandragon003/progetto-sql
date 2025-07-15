@@ -96,3 +96,10 @@ idIngrediente INT PRIMARY KEY,
 nome VARCHAR(50) NOT NULL,
 tipo VARCHAR (50) NOT NULL
 );
+
+CREATE TABLE Usa (
+    idRicetta INT REFERENCES Ricetta(idRicetta) ON DELETE CASCADE,
+    idIngrediente INT REFERENCES Ingrediente(idIngrediente) ON DELETE CASCADE,
+    quantita INT NOT NULL CHECK (quantita > 0),
+    PRIMARY KEY (idRicetta, idIngrediente)
+);
