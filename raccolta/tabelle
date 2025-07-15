@@ -31,7 +31,7 @@ CREATE TABLE lavora (
 CREATE TYPE frequenza  AS ENUM ('ogniGiorno', 'ogniDueGiorni', 'settimanale' , 'biSettimanale', 'mensile', 'bimestrale','annuale');
 
 CREATE TABLE corsoCucina (
-idCorsoCorso INT PRIMARY KEY ,
+idCorsoCucina INT PRIMARY KEY ,
 nomeCorso VARCHAR(50) NOT NULL ,
 argomento VARCHAR(50) NOT NULL,
 frequenzaCorso frequenza NOT NULL ,
@@ -61,7 +61,7 @@ votiAvuti INT CHECK (votiAvuti>=0 AND votiAvuti<=10),
 stato BOOL NOT NULL 
 ) ;
 
-
+CREATE TYPE tipoSessione AS ENUM ('inPresenza', 'online');
 
 CREATE TABLE Sessione (
 idSessione INT PRIMARY KEY, 
