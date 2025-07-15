@@ -114,7 +114,7 @@ EXECUTE FUNCTION checkPostiCorso();
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 CREATE OR REPLACE FUNCTION cucinaRicetta ()
-RETURNS TRIGGERS AS $$
+RETURNS TRIGGER AS $$
 DECLARE
 	conta_ricette INT;
 BEGIN
