@@ -235,3 +235,30 @@ BEFORE INSERT ON adesione
 FOR EACH ROW
 EXECUTE FUNCTION checkRichieste();
 
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+CREATE OR REPLACE FUNCTION checkPresenzaAdesione()
+RETURNS TRIGGER AS $$
+DECLARE
+    adesione_valida INT;
+BEGIN
+    SELECT COUNT(*) INTO adesione_valida
+    FROM adesione
+    WHERE idSessione = NEW.idSessione
+      AND codFiscale = NEW.codFiscale
+      AND stato = TRUE;
+
+    IF adesione_valida = 0 THEN
+        RAISE EXCEPTION 'Utente % non ha un adesione accettata per la sessione %', NEW.codFiscale, NEW.idSessione;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_checkPresenzaAdesione
+BEFORE INSERT OR UPDATE ON iscritto  
+FOR EACH ROW
+EXECUTE FUNCTION checkPresenzaAdesione();
+
