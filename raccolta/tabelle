@@ -85,4 +85,8 @@ numeroPosti INT CHECK (numeroPosti IS NULL OR numeroPosti > 0),
 );
 
 
-
+CREATE TABLE ricetta (
+idRicetta INT PRIMARY KEY,
+nome VARCHAR(50) NOT NULL,
+tempoPreparazione INT
+);
