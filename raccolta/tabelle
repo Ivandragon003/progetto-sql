@@ -90,3 +90,9 @@ idRicetta INT PRIMARY KEY,
 nome VARCHAR(50) NOT NULL,
 tempoPreparazione INT
 );
+
+CREATE TABLE ingrediente(
+idIngrediente INT PRIMARY KEY,
+nome VARCHAR(50) NOT NULL,
+tipo VARCHAR (50) NOT NULL
+);
