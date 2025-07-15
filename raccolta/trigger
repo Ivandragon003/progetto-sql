@@ -146,5 +146,42 @@ DEFERRABLE INITIALLY DEFERRED
 FOR EACH ROW
 EXECUTE FUNCTION maxRicetta();
 		
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+
+CREATE OR REPLACE FUNCTION checkPostiSessione()
+RETURNS TRIGGER AS $$
+DECLARE
+    max_posti INT;
+    iscritti INT;
+    tipo_sessione tipoSessione;
+BEGIN
+    SELECT numeroPosti, tipo INTO max_posti, tipo_sessione
+    FROM Sessione
+    WHERE idSessione = NEW.idSessione;
+
+    SELECT COUNT(*) INTO iscritti
+    FROM adesione
+    WHERE idSessione = NEW.idSessione AND stato = TRUE;
+
+    IF tipo_sess = 'inPresenza' THEN
+        IF iscritti >= max_posti THEN
+            NEW.stato := FALSE;
+        ELSE
+            NEW.stato := TRUE;
+        END IF;
+    ELSE
+        NEW.stato := TRUE;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER trg_checkPostiSessione
+BEFORE INSERT ON adesione
+FOR EACH ROW
+EXECUTE FUNCTION checkPostiSessione();
 
 
