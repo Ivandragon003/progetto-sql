@@ -306,7 +306,9 @@ CREATE OR REPLACE FUNCTION checkCorsoChef()
 RETURNS TRIGGER AS $$
 BEGIN
  IF NOT EXISTS (
-        SELECT 1 FROM tiene WHERE idCorsoCucina = OLD.idCorsoCucina AND codFiscale <> OLD.codFiscale
+        SELECT 1
+        FROM tiene
+        WHERE idCorsoCucina = OLD.idCorsoCucina AND codFiscale <> OLD.codFiscale
     ) THEN
         RAISE EXCEPTION 'Il corso % non può restare senza chef.', OLD.idCorsoCucina;
     END IF;
