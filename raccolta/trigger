@@ -24,28 +24,28 @@ EXECUTE FUNCTION checkRistorante();
 
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-CREATE OR REPLACE FUNCTION checkCorsoUtente() 
+CREATE OR REPLACE FUNCTION checkCorsoUtente()
 RETURNS TRIGGER AS $$
-DECLARE 
+DECLARE
     cont INT;
-    data_fine DATE;
-BEGIN 
-  
+    data_inizio TIMESTAMP;
+BEGIN
+
     SELECT COUNT(*) INTO cont
     FROM iscritto
     WHERE idCorsoCucina = OLD.idCorsoCucina;
 
-    
-    SELECT dataFineCorso INTO data_fine
+  
+    SELECT dataInizioCorso INTO data_inizio
     FROM corsoCucina
     WHERE idCorsoCucina = OLD.idCorsoCucina;
 
-    IF cont = 0 AND data_fine < CURRENT_DATE THEN
-        DELETE FROM corsoCucina
-        WHERE idCorsoCucina = OLD.idCorsoCucina;
+    IF cont = 0 AND data_inizio <= CURRENT_TIMESTAMP THEN
+       
+        DELETE FROM corsoCucina WHERE idCorsoCucina = OLD.idCorsoCucina;
     END IF;
 
-    RETURN NULL; 
+    RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 
