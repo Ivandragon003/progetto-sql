@@ -119,42 +119,7 @@ EXECUTE FUNCTION checkPostiCorso();
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-CREATE OR REPLACE FUNCTION maxRicetta()
-RETURNS TRIGGER AS $$
-DECLARE
-    cont INT;
-BEGIN
-    SELECT COUNT(*) INTO cont
-    FROM ricetta
-    WHERE idSessione = NEW.idSessione;
-
-    IF NEW.tipo = 'inPresenza' THEN
-        IF cont <> 1 THEN
-            RAISE EXCEPTION 
-            'Errore: una sessione in presenza deve essere associata a una e una sola ricetta.';
-        END IF;
-
-    ELSIF NEW.tipo = 'online' THEN
-        IF cont > 0 THEN
-            RAISE EXCEPTION 
-            'Errore: una sessione online non può avere ricette associate.';
-        END IF;
-    END IF;
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-
-CREATE CONSTRAINT TRIGGER trg_maxRicetta
-AFTER INSERT ON sessione
-DEFERRABLE INITIALLY DEFERRED
-FOR EACH ROW
-EXECUTE FUNCTION maxRicetta();
-		
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 
 CREATE OR REPLACE FUNCTION checkPostiSessione()
