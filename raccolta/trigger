@@ -226,12 +226,11 @@ RETURNS trigger AS $$
 DECLARE
     corso_sessione INT;
 BEGIN
-    -- Trova il corso associato alla sessione
+  
     SELECT idCorsoCucina INTO corso_sessione
     FROM Sessione
     WHERE idSessione = NEW.idSessione;
 
-    -- Verifica se l'utente è iscritto al corso relativo alla sessione
     IF NOT EXISTS (
         SELECT 1
         FROM iscritto
@@ -263,25 +262,25 @@ EXECUTE FUNCTION checkIscrittoCorso();
 CREATE OR REPLACE FUNCTION emailUnivocaPersona()
 RETURNS TRIGGER AS $$
 DECLARE
-    cnt INTEGER;
+    cont INTEGER;
 BEGIN
     
     IF TG_TABLE_NAME = 'chef' THEN
-        SELECT COUNT(*) INTO cnt
+        SELECT COUNT(*) INTO cont
         FROM utente
         WHERE email = NEW.email;
 
-        IF cnt > 0 THEN
+        IF cont > 0 THEN
             RAISE EXCEPTION 'Email % già usata da un utente.', NEW.email;
         END IF;
 
    
     ELSIF TG_TABLE_NAME = 'utente' THEN
-        SELECT COUNT(*) INTO cnt
+        SELECT COUNT(*) INTO cont
         FROM chef
         WHERE email = NEW.email;
 
-        IF cnt > 0 THEN
+        IF cont > 0 THEN
             RAISE EXCEPTION 'Email % già usata da uno chef.', NEW.email;
         END IF;
     END IF;
