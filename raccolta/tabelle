@@ -7,6 +7,21 @@ CREATE TABLE ristorante (
     UNIQUE (partitaIva, nome)
 );
 
+
+
+
+CREATE TABLE ricetta (
+idRicetta INT PRIMARY KEY,
+nome VARCHAR(50) NOT NULL,
+tempoPreparazione INT
+);
+
+CREATE TABLE ingrediente(
+idIngrediente INT PRIMARY KEY,
+nome VARCHAR(50) NOT NULL,
+tipo VARCHAR (50) NOT NULL
+);
+
 CREATE TABLE chef (
     codFiscale VARCHAR(16) PRIMARY KEY,
     CONSTRAINT chk_codFiscale CHECK (
@@ -129,17 +144,6 @@ CREATE TABLE tiene (
 
 
 
-CREATE TABLE ricetta (
-idRicetta INT PRIMARY KEY,
-nome VARCHAR(50) NOT NULL,
-tempoPreparazione INT
-);
-
-CREATE TABLE ingrediente(
-idIngrediente INT PRIMARY KEY,
-nome VARCHAR(50) NOT NULL,
-tipo VARCHAR (50) NOT NULL
-);
 
 CREATE TABLE Usa (
     idRicetta INT REFERENCES Ricetta(idRicetta) ON DELETE CASCADE,
