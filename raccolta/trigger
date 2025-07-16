@@ -379,3 +379,28 @@ EXECUTE FUNCTION emailUnivocaPersona();
 
 
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+CREATE OR REPLACE FUNCTION checkCorsoChef()
+RETURNS TRIGGER AS $$
+DECLARE
+    cnt INTEGER;
+BEGIN
+    SELECT COUNT(*) INTO cnt
+    FROM tiene
+    WHERE idCorsoCucina = OLD.idCorsoCucina
+      AND codFiscale <> OLD.codFiscale;
+
+    IF cnt = 0 THEN
+        RAISE EXCEPTION 'Il corso % non può restare senza chef.', OLD.idCorsoCucina;
+    END IF;
+
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER trg_checkCorsoChef
+BEFORE DELETE ON tiene
+FOR EACH ROW
+EXECUTE FUNCTION checkCorsoChef();
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
