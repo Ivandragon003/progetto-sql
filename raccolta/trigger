@@ -178,8 +178,6 @@ BEGIN
         ELSE
             NEW.stato := TRUE;
         END IF;
-    ELSE
-        NEW.stato := TRUE;
     END IF;
 
     RETURN NEW;
