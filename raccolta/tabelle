@@ -1,6 +1,6 @@
 CREATE TABLE ristorante (
 idRistorante INT PRIMARY KEY  ,
-partitaIva VARCHAR(11) UNIQUE NOT NULL ,
+partitaIva VARCHAR(11) NOT NULL ,
 via VARCHAR(100) ,
 nome VARCHAR(50) NOT NULL ,
 stelleMichelin int CHECK (stelleMichelin>=0 AND stelleMichelin<=3),
