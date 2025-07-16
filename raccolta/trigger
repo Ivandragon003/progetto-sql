@@ -261,26 +261,22 @@ EXECUTE FUNCTION checkIscrittoCorso();
 
 CREATE OR REPLACE FUNCTION emailUnivocaPersona()
 RETURNS TRIGGER AS $$
-DECLARE
-    cont INTEGER;
 BEGIN
-    
     IF TG_TABLE_NAME = 'chef' THEN
-        SELECT COUNT(*) INTO cont
-        FROM utente
-        WHERE email = NEW.email;
-
-        IF cont > 0 THEN
+        IF EXISTS (
+            SELECT 1
+            FROM utente
+            WHERE email = NEW.email
+        ) THEN
             RAISE EXCEPTION 'Email % già usata da un utente.', NEW.email;
         END IF;
 
-   
     ELSIF TG_TABLE_NAME = 'utente' THEN
-        SELECT COUNT(*) INTO cont
-        FROM chef
-        WHERE email = NEW.email;
-
-        IF cont > 0 THEN
+        IF EXISTS (
+            SELECT 1
+            FROM chef
+            WHERE email = NEW.email
+        ) THEN
             RAISE EXCEPTION 'Email % già usata da uno chef.', NEW.email;
         END IF;
     END IF;
@@ -288,6 +284,7 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
 
 CREATE TRIGGER trg_emailUnivocaPersona
 BEFORE INSERT OR UPDATE ON chef
@@ -322,3 +319,39 @@ BEFORE DELETE ON tiene
 FOR EACH ROW
 EXECUTE FUNCTION checkCorsoChef();
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+
+CREATE OR REPLACE FUNCTION checkCodFiscaleUnico()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_TABLE_NAME = 'chef' THEN
+        IF EXISTS (
+            SELECT 1 FROM utente WHERE codFiscale = NEW.codFiscale
+        ) THEN
+            RAISE EXCEPTION 'Codice fiscale % già presente nella tabella utente.', NEW.codFiscale;
+        END IF;
+
+    ELSIF TG_TABLE_NAME = 'utente' THEN
+        IF EXISTS (
+            SELECT 1 FROM chef WHERE codFiscale = NEW.codFiscale
+        ) THEN
+            RAISE EXCEPTION 'Codice fiscale % già presente nella tabella chef.', NEW.codFiscale;
+        END IF;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER trg_checkCodFiscale_chef
+BEFORE INSERT OR UPDATE ON chef
+FOR EACH ROW
+EXECUTE FUNCTION checkCodFiscaleUnico();
+CREATE TRIGGER trg_checkCodFiscale_utente
+BEFORE INSERT OR UPDATE ON utente
+FOR EACH ROW
+EXECUTE FUNCTION checkCodFiscaleUnico();
+
+
+
