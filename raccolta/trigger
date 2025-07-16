@@ -200,7 +200,7 @@ DECLARE
 BEGIN
     SELECT tipo INTO tipo_sessione FROM Sessione WHERE idSessione = NEW.idSessione;
 
-    IF tipo_sess != 'inPresenza' THEN
+    IF tipo_sessione != 'inPresenza' THEN
         RAISE EXCEPTION 'Adesione permessa solo per sessioni in presenza';
     END IF;
 
