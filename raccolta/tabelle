@@ -1,28 +1,26 @@
 CREATE TABLE ristorante (
-idRistorante INT PRIMARY KEY  ,
-partitaIva VARCHAR(11) NOT NULL ,
-via VARCHAR(100) ,
-nome VARCHAR(50) NOT NULL ,
-stelleMichelin int CHECK (stelleMichelin>=0 AND stelleMichelin<=3),
-UNIQUE (partitaIva,nome)
+    idRistorante INT PRIMARY KEY,
+    partitaIva VARCHAR(11) NOT NULL CHECK (char_length(partitaIva) = 11),
+    via VARCHAR(100),
+    nome VARCHAR(50) NOT NULL,
+    stelleMichelin INT CHECK (stelleMichelin >= 0 AND stelleMichelin <= 3),
+    UNIQUE (partitaIva, nome)
 );
 
-
-
-
 CREATE TABLE chef (
-codFiscale VARCHAR(16) PRIMARY KEY,
-CONSTRAINT chk_codFiscale CHECK (
-    char_length(codFiscale) = 16
-    AND codFiscale ~* '^[A-Z]{6}[0-9]{2}[A-Z][0-9]{2}[A-Z][0-9]{3}[A-Z]$'
-),
-nome VARCHAR(50) NOT NULL,
-cognome VARCHAR(50) NOT NULL,
-dataNascita DATE,
-email VARCHAR(60) UNIQUE CHECK (
-        email ~* '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'),
-anniEsperienza INT,
-disponibilita BOOL
+    codFiscale VARCHAR(16) PRIMARY KEY,
+    CONSTRAINT chk_codFiscale CHECK (
+        char_length(codFiscale) = 16
+        AND codFiscale ~* '^[A-Z]{6}[0-9]{2}[A-Z][0-9]{2}[A-Z][0-9]{3}[A-Z]$'
+    ),
+    nome VARCHAR(50) NOT NULL,
+    cognome VARCHAR(50) NOT NULL,
+    dataNascita DATE,
+    email VARCHAR(60) UNIQUE CHECK (
+        email ~* '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    ),
+    anniEsperienza INT CHECK (anniEsperienza >= 0),
+    disponibilita BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 
@@ -108,7 +106,7 @@ numeroPosti INT CHECK (numeroPosti IS NULL OR numeroPosti > 0),
 CREATE TABLE adesione (
 idSessione INT REFERENCES sessione(idSessione),
 codFiscale VARCHAR(16) REFERENCES utente(codFiscale),
-stato BOOL ,
+stato BOOL NOT NULL ,
 dataAdesione TIMESTAMP ,
 PRIMARY KEY (idSessione,codFiscale)
 );
