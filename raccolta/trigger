@@ -234,7 +234,7 @@ FOR EACH ROW
 EXECUTE FUNCTION checkPresenzaAdesione();
 
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-EATE OR REPLACE FUNCTION checkSegueCorso()
+CREATE OR REPLACE FUNCTION checkSegueCorso()
 RETURNS trigger AS $$
 DECLARE
     corso_sessione INT;
@@ -261,7 +261,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trg_checkSegueCorso
-BEFORE INSERT OR UPDATE ON Segue
+BEFORE INSERT OR UPDATE ON segue
 FOR EACH ROW
 EXECUTE FUNCTION checkSegueCorso();
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -296,7 +296,7 @@ $$ LANGUAGE plpgsql;
 
 
 CREATE TRIGGER trg_checkAdesioneCorso
-BEFORE INSERT OR UPDATE ON Adesione
+BEFORE INSERT OR UPDATE ON adesione
 FOR EACH ROW
 EXECUTE FUNCTION checkAdesioneCorso();
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
