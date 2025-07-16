@@ -19,7 +19,7 @@ BEFORE DELETE ON lavora
 FOR EACH ROW
 EXECUTE FUNCTION checkRistorante();
 
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
 
 CREATE OR REPLACE FUNCTION checkCorsoUtente()
 RETURNS TRIGGER AS $$
@@ -49,7 +49,7 @@ FOR EACH ROW
 EXECUTE FUNCTION checkCorsoUtente();
 
 
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
 
 CREATE OR REPLACE FUNCTION checkIntervalloSessione()
 RETURNS TRIGGER AS $$
@@ -78,7 +78,7 @@ FOR EACH ROW
 EXECUTE FUNCTION checkIntervalloSessione();
 
 
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
 CREATE OR REPLACE FUNCTION checkPostiCorso()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -109,7 +109,7 @@ FOR EACH ROW
 EXECUTE FUNCTION checkPostiCorso();
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
 
@@ -146,7 +146,7 @@ BEFORE INSERT ON adesione
 FOR EACH ROW
 EXECUTE FUNCTION checkPostiSessione();
 
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\		
+		
 
 
 CREATE OR REPLACE FUNCTION bloccoAdesioniOnline()
@@ -172,7 +172,7 @@ EXECUTE FUNCTION bloccoAdesioniOnline();
 
 
 
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
 
 
 CREATE OR REPLACE FUNCTION checkDataRichieste()
@@ -198,7 +198,7 @@ FOR EACH ROW
 EXECUTE FUNCTION checkDataRichieste();
 
 
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
 
 CREATE OR REPLACE FUNCTION checkPresenzaAdesione()
 RETURNS TRIGGER AS $$
@@ -220,7 +220,7 @@ BEFORE INSERT OR UPDATE ON iscritto
 FOR EACH ROW
 EXECUTE FUNCTION checkPresenzaAdesione();
 
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
 CREATE OR REPLACE FUNCTION checkIscrittoCorso()
 RETURNS trigger AS $$
 DECLARE
@@ -256,7 +256,7 @@ CREATE TRIGGER trg_checkAdesioneCorso
 BEFORE INSERT OR UPDATE ON adesione
 FOR EACH ROW
 EXECUTE FUNCTION checkIscrittoCorso();
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
 
 
 CREATE OR REPLACE FUNCTION emailUnivocaPersona()
@@ -297,7 +297,7 @@ FOR EACH ROW
 EXECUTE FUNCTION emailUnivocaPersona();
 
 
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
 
 CREATE OR REPLACE FUNCTION checkCorsoChef()
 RETURNS TRIGGER AS $$
@@ -318,7 +318,7 @@ CREATE TRIGGER trg_checkCorsoChef
 BEFORE DELETE ON tiene
 FOR EACH ROW
 EXECUTE FUNCTION checkCorsoChef();
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
 
 
 CREATE OR REPLACE FUNCTION checkCodFiscaleUnico()
@@ -348,10 +348,8 @@ CREATE TRIGGER trg_checkCodFiscale_chef
 BEFORE INSERT OR UPDATE ON chef
 FOR EACH ROW
 EXECUTE FUNCTION checkCodFiscaleUnico();
+
 CREATE TRIGGER trg_checkCodFiscale_utente
 BEFORE INSERT OR UPDATE ON utente
 FOR EACH ROW
 EXECUTE FUNCTION checkCodFiscaleUnico();
-
-
-
