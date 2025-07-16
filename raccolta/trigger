@@ -1,18 +1,15 @@
 
 CREATE OR REPLACE FUNCTION checkRistorante()
 RETURNS TRIGGER AS $$
-DECLARE
-    cont INTEGER;
 BEGIN
-    SELECT COUNT(*) INTO cont
-    FROM lavora
-    WHERE idRistorante = OLD.idRistorante
-      AND codFiscale <> OLD.codFiscale;
-
-    IF cont = 0 THEN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM lavora
+        WHERE idRistorante = OLD.idRistorante
+          AND codFiscale <> OLD.codFiscale
+    ) THEN
         RAISE EXCEPTION 'Non puoi lasciare il ristorante % senza chef.', OLD.idRistorante;
     END IF;
-
     RETURN OLD;
 END;
 $$ LANGUAGE plpgsql;
@@ -27,25 +24,21 @@ EXECUTE FUNCTION checkRistorante();
 CREATE OR REPLACE FUNCTION checkCorsoUtente()
 RETURNS TRIGGER AS $$
 DECLARE
-    cont INT;
     data_inizio TIMESTAMP;
 BEGIN
-
-    SELECT COUNT(*) INTO cont
-    FROM iscritto
-    WHERE idCorsoCucina = OLD.idCorsoCucina;
-
-  
     SELECT dataInizioCorso INTO data_inizio
     FROM corsoCucina
     WHERE idCorsoCucina = OLD.idCorsoCucina;
 
-    IF cont = 0 AND data_inizio <= CURRENT_TIMESTAMP THEN
-       
+    IF NOT EXISTS (
+        SELECT 1 
+        FROM iscritto
+        WHERE idCorsoCucina = OLD.idCorsoCucina
+    ) AND data_inizio <= CURRENT_TIMESTAMP THEN
         DELETE FROM corsoCucina WHERE idCorsoCucina = OLD.idCorsoCucina;
     END IF;
 
-    RETURN NULL;
+    RETURN NULL; 
 END;
 $$ LANGUAGE plpgsql;
 
@@ -69,10 +62,8 @@ BEGIN
     FROM corsoCucina
     WHERE idCorsoCucina = NEW.idCorsoCucina;
 
-    IF NOT (
-        inizio_corso <= NEW.dataInizioSessione AND NEW.dataFineSessione <= fine_corso) THEN
-        RAISE EXCEPTION 
-            'Le date della sessione (% → %) devono essere comprese nell’intervallo del corso (% → %)',
+    IF NEW.dataInizioSessione < inizio_corso OR NEW.dataFineSessione > fine_corso THEN
+        RAISE EXCEPTION 'Le date della sessione (% → %) devono essere comprese nell’intervallo del corso (% → %)',
             NEW.dataInizioSessione, NEW.dataFineSessione, inizio_corso, fine_corso;
     END IF;
 
@@ -214,13 +205,9 @@ RETURNS TRIGGER AS $$
 DECLARE
     adesione_valida INT;
 BEGIN
-    SELECT COUNT(*) INTO adesione_valida
-    FROM adesione
-    WHERE idSessione = NEW.idSessione
-      AND codFiscale = NEW.codFiscale
-      AND stato = TRUE;
-
-    IF adesione_valida = 0 THEN
+    IF NOT EXISTS (
+        SELECT 1 FROM adesione WHERE idSessione = NEW.idSessione AND codFiscale = NEW.codFiscale AND stato = TRUE
+    ) THEN
         RAISE EXCEPTION 'Utente % non ha un adesione accettata per la sessione %', NEW.codFiscale, NEW.idSessione;
     END IF;
 
@@ -234,11 +221,10 @@ FOR EACH ROW
 EXECUTE FUNCTION checkPresenzaAdesione();
 
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-CREATE OR REPLACE FUNCTION checkSegueCorso()
+CREATE OR REPLACE FUNCTION checkIscrittoCorso()
 RETURNS trigger AS $$
 DECLARE
     corso_sessione INT;
-    cont INT;
 BEGIN
     -- Trova il corso associato alla sessione
     SELECT idCorsoCucina INTO corso_sessione
@@ -246,11 +232,11 @@ BEGIN
     WHERE idSessione = NEW.idSessione;
 
     -- Verifica se l'utente è iscritto al corso relativo alla sessione
-    SELECT COUNT(*) INTO cont
-    FROM iscritto
-    WHERE codFiscale = NEW.codFiscale AND idCorsoCucina = corso_sessione;
-
-    IF cont = 0 THEN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM iscritto
+        WHERE codFiscale = NEW.codFiscale AND idCorsoCucina = corso_sessione
+    ) THEN
         RAISE EXCEPTION 
             'L''utente % non è iscritto al corso % della sessione %',
             NEW.codFiscale, corso_sessione, NEW.idSessione;
@@ -260,45 +246,17 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
 CREATE TRIGGER trg_checkSegueCorso
 BEFORE INSERT OR UPDATE ON segue
 FOR EACH ROW
-EXECUTE FUNCTION checkSegueCorso();
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-
-
-CREATE OR REPLACE FUNCTION checkAdesioneCorso()
-RETURNS trigger AS $$
-DECLARE
-    corso_sessione INT;
-    cont INT;
-BEGIN
-    -- Trova il corso associato alla sessione
-    SELECT idCorsoCucina INTO corso_sessione
-    FROM Sessione
-    WHERE idSessione = NEW.idSessione;
-
-    -- Verifica se l'utente è iscritto a quel corso
-    SELECT COUNT(*) INTO cont
-    FROM iscritto
-    WHERE codFiscale = NEW.codFiscale AND idCorsoCucina = corso_sessione;
-
-    IF cont = 0 THEN
-        RAISE EXCEPTION 
-            'L''utente % non è iscritto al corso % della sessione %',
-            NEW.codFiscale , corso_sessione, NEW.idSessione;
-    END IF;
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
+EXECUTE FUNCTION checkIscrittoCorso();
 
 
 CREATE TRIGGER trg_checkAdesioneCorso
 BEFORE INSERT OR UPDATE ON adesione
 FOR EACH ROW
-EXECUTE FUNCTION checkAdesioneCorso();
+EXECUTE FUNCTION checkIscrittoCorso();
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 
@@ -347,18 +305,12 @@ EXECUTE FUNCTION emailUnivocaPersona();
 
 CREATE OR REPLACE FUNCTION checkCorsoChef()
 RETURNS TRIGGER AS $$
-DECLARE
-    cnt INTEGER;
 BEGIN
-    SELECT COUNT(*) INTO cnt
-    FROM tiene
-    WHERE idCorsoCucina = OLD.idCorsoCucina
-      AND codFiscale <> OLD.codFiscale;
-
-    IF cnt = 0 THEN
+ IF NOT EXISTS (
+        SELECT 1 FROM tiene WHERE idCorsoCucina = OLD.idCorsoCucina AND codFiscale <> OLD.codFiscale
+    ) THEN
         RAISE EXCEPTION 'Il corso % non può restare senza chef.', OLD.idCorsoCucina;
     END IF;
-
     RETURN OLD;
 END;
 $$ LANGUAGE plpgsql;
