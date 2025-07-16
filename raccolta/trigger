@@ -335,3 +335,47 @@ BEFORE INSERT OR UPDATE ON Adesione
 FOR EACH ROW
 EXECUTE FUNCTION checkAdesioneCorso();
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+
+CREATE OR REPLACE FUNCTION emailUnivocaPersona()
+RETURNS TRIGGER AS $$
+DECLARE
+    cnt INTEGER;
+BEGIN
+    
+    IF TG_TABLE_NAME = 'chef' THEN
+        SELECT COUNT(*) INTO cnt
+        FROM utente
+        WHERE email = NEW.email;
+
+        IF cnt > 0 THEN
+            RAISE EXCEPTION 'Email % già usata da un utente.', NEW.email;
+        END IF;
+
+   
+    ELSIF TG_TABLE_NAME = 'utente' THEN
+        SELECT COUNT(*) INTO cnt
+        FROM chef
+        WHERE email = NEW.email;
+
+        IF cnt > 0 THEN
+            RAISE EXCEPTION 'Email % già usata da uno chef.', NEW.email;
+        END IF;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_emailUnivocaPersona
+BEFORE INSERT OR UPDATE ON chef
+FOR EACH ROW
+EXECUTE FUNCTION emailUnivocaPersona();
+
+CREATE TRIGGER trg_chk_email_utente
+BEFORE INSERT OR UPDATE ON utente
+FOR EACH ROW
+EXECUTE FUNCTION emailUnivocaPersona();
+
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
