@@ -60,6 +60,7 @@ numeroPosti INT CHECK(numeroPosti > 0 ) ,
 dataInizioCorso TIMESTAMP NOT NULL,
 dataFineCorso TIMESTAMP NOT NULL,
 CHECK (dataInizioCorso < dataFineCorso)
+UNIQUE (nomeCorso, dataInizioCorso, dataFineCorso)
 );
 
 
