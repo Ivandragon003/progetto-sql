@@ -199,26 +199,28 @@ EXECUTE FUNCTION checkDataRichieste();
 
 
 
-
-CREATE OR REPLACE FUNCTION checkPresenzaAdesione()
+CREATE OR REPLACE FUNCTION checkPresenzaAdesioneSegue()
 RETURNS TRIGGER AS $$
-DECLARE
-    adesione_valida INT;
 BEGIN
     IF NOT EXISTS (
-        SELECT 1 FROM adesione WHERE idSessione = NEW.idSessione AND codFiscale = NEW.codFiscale AND stato = TRUE
+        SELECT 1 FROM adesione
+        WHERE idSessione = NEW.idSessione
+          AND codFiscale = NEW.codFiscale
+          AND stato = TRUE
     ) THEN
-        RAISE EXCEPTION 'Utente % non ha un adesione accettata per la sessione %', NEW.codFiscale, NEW.idSessione;
+        RAISE EXCEPTION 'Utente % non ha un adesione valida per la sessione %', NEW.codFiscale, NEW.idSessione;
     END IF;
-
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trg_checkPresenzaAdesione
-BEFORE INSERT OR UPDATE ON iscritto  
+DROP TRIGGER IF EXISTS trg_checkPresenzaAdesioneSegue ON segue;
+
+CREATE TRIGGER trg_checkPresenzaAdesioneSegue
+BEFORE INSERT OR UPDATE ON segue
 FOR EACH ROW
-EXECUTE FUNCTION checkPresenzaAdesione();
+EXECUTE FUNCTION checkPresenzaAdesioneSegue();
+
 
 
 CREATE OR REPLACE FUNCTION checkIscrittoCorso()
