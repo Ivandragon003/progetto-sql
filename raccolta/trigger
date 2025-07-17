@@ -412,3 +412,38 @@ CREATE TRIGGER trg_checkNumeroPostiSessione
 BEFORE INSERT OR UPDATE ON sessione
 FOR EACH ROW
 EXECUTE FUNCTION checkNumeroPostiSessione();
+
+
+
+
+CREATE OR REPLACE FUNCTION checkConflittoLuogoSessione()
+RETURNS TRIGGER AS $$
+BEGIN
+  
+    IF NEW.tipo = 'inPresenza' THEN
+        IF EXISTS (
+            SELECT 1
+            FROM sessione s
+            WHERE s.tipo = 'inPresenza'
+              AND s.idSessione IS DISTINCT FROM NEW.idSessione
+              AND s.via = NEW.via
+              AND s.citta = NEW.citta
+              AND s.cap = NEW.cap
+              AND s.dataInizioSessione < NEW.dataFineSessione
+              AND s.dataFineSessione > NEW.dataInizioSessione
+        ) THEN
+            RAISE EXCEPTION 
+              'Esiste già una sessione in presenza nello stesso luogo e orario.';
+        END IF;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_checkConflittoLuogoSessione
+BEFORE INSERT OR UPDATE ON sessione
+FOR EACH ROW
+EXECUTE FUNCTION checkConflittoLuogoSessione();
+
+
