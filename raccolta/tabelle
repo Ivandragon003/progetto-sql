@@ -47,7 +47,7 @@ CREATE TABLE lavora (
 );
 
 
-CREATE TYPE frequenza  AS ENUM ('ogniGiorno', 'ogniDueGiorni', 'settimanale' , 'biSettimanale', 'mensile', 'bimestrale','annuale');
+CREATE TYPE frequenza  AS ENUM ('ogniGiorno', 'ogniDueGiorni', 'settimanale' , 'biSettimanale', 'mensile', 'bimestrale');
 
 
 CREATE TABLE corsoCucina (
