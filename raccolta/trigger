@@ -393,14 +393,14 @@ RETURNS TRIGGER AS $$
 DECLARE
     max_posti INT;
 BEGIN
-    -- Prendo il numeroPosti del corso associato
+
     SELECT numeroPosti INTO max_posti
     FROM corsoCucina
     WHERE idCorsoCucina = NEW.idCorsoCucina;
 
     IF NEW.numeroPosti IS NOT NULL AND max_posti IS NOT NULL THEN
         IF NEW.numeroPosti > max_posti THEN
-            RAISE EXCEPTION 'Numero posti sessione (%), maggiore di quello del corso (%).', NEW.numeroPosti, max_posti;
+            RAISE EXCEPTION 'Numero posti della sessione (%)  è maggiore rispetto a quelli del corso (%).', NEW.numeroPosti, max_posti;
         END IF;
     END IF;
 
@@ -412,4 +412,3 @@ CREATE TRIGGER trg_checkNumeroPostiSessione
 BEFORE INSERT OR UPDATE ON sessione
 FOR EACH ROW
 EXECUTE FUNCTION checkNumeroPostiSessione();
-
