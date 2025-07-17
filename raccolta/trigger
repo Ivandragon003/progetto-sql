@@ -288,12 +288,12 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE TRIGGER trg_emailUnivocaPersona
+CREATE TRIGGER trg_emailUnivocaChef
 BEFORE INSERT OR UPDATE ON chef
 FOR EACH ROW
 EXECUTE FUNCTION emailUnivocaPersona();
 
-CREATE TRIGGER trg_chk_email_utente
+CREATE TRIGGER trg_emailUnivocaUtente
 BEFORE INSERT OR UPDATE ON utente
 FOR EACH ROW
 EXECUTE FUNCTION emailUnivocaPersona();
