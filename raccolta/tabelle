@@ -8,8 +8,6 @@ CREATE TABLE ristorante (
 );
 
 
-
-
 CREATE TABLE ricetta (
 idRicetta INT PRIMARY KEY,
 nome VARCHAR(50) NOT NULL,
@@ -47,7 +45,7 @@ CREATE TABLE lavora (
 );
 
 
-CREATE TYPE frequenza  AS ENUM ('ogniGiorno', 'ogniDueGiorni', 'settimanale' , 'biSettimanale', 'mensile', 'bimestrale');
+CREATE TYPE frequenza  AS ENUM ('giornaliero', 'ogniDueGiorni', 'settimanale' , 'biSettimanale', 'mensile', 'bimestrale');
 
 
 CREATE TABLE corsoCucina (
