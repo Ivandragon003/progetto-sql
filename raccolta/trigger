@@ -353,3 +353,63 @@ CREATE TRIGGER trg_checkCodFiscale_utente
 BEFORE INSERT OR UPDATE ON utente
 FOR EACH ROW
 EXECUTE FUNCTION checkCodFiscaleUnico();
+
+
+
+CREATE OR REPLACE FUNCTION checkConflittoSessioneChef() 
+RETURNS TRIGGER AS $$
+DECLARE
+    conflitto INTEGER;
+BEGIN
+    SELECT COUNT(*) INTO conflitto
+    FROM sessione s
+    JOIN tiene t ON s.idCorsoCucina = t.idCorsoCucina
+    WHERE t.codFiscale IN (
+        SELECT codFiscale
+        FROM tiene
+        WHERE idCorsoCucina = NEW.idCorsoCucina
+    )
+    AND s.idSessione IS DISTINCT FROM NEW.idSessione
+    AND s.dataInizioSessione < NEW.dataFineSessione
+    AND s.dataFineSessione > NEW.dataInizioSessione;
+
+    IF conflitto > 0 THEN
+        RAISE EXCEPTION 'Errore: lo chef ha già una sessione nello stesso orario.';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_checkConflittoSessioneChef
+BEFORE INSERT OR UPDATE ON sessione
+FOR EACH ROW
+EXECUTE FUNCTION checkConflittoSessioneChef();
+
+
+
+CREATE OR REPLACE FUNCTION checkNumeroPostiSessione()
+RETURNS TRIGGER AS $$
+DECLARE
+    max_posti INT;
+BEGIN
+    -- Prendo il numeroPosti del corso associato
+    SELECT numeroPosti INTO max_posti
+    FROM corsoCucina
+    WHERE idCorsoCucina = NEW.idCorsoCucina;
+
+    IF NEW.numeroPosti IS NOT NULL AND max_posti IS NOT NULL THEN
+        IF NEW.numeroPosti > max_posti THEN
+            RAISE EXCEPTION 'Numero posti sessione (%), maggiore di quello del corso (%).', NEW.numeroPosti, max_posti;
+        END IF;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_checkNumeroPostiSessione
+BEFORE INSERT OR UPDATE ON sessione
+FOR EACH ROW
+EXECUTE FUNCTION checkNumeroPostiSessione();
+
