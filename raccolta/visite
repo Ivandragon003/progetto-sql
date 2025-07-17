@@ -35,7 +35,6 @@ WHERE
     AND a.stato = TRUE ;
 
 
-
 CREATE OR REPLACE VIEW QuantitaIngredientiRicetta AS 
 WITH partecipanti AS (
     SELECT
@@ -47,18 +46,25 @@ WITH partecipanti AS (
         v.idSessione
 )
 SELECT
+    s.idSessione,
+    r.nome AS nomeRicetta,
     i.idIngrediente,
     i.nome AS nomeIngrediente,
     SUM(p.numPartecipanti * u.quantita) AS quantita_totale
 FROM
     Sessione s
 JOIN
-    Usa u ON s.idRicetta = u.idRicetta
+    Ricetta r ON s.idRicetta = r.idRicetta
+JOIN
+    Usa u ON r.idRicetta = u.idRicetta
 JOIN
     Ingrediente i ON u.idIngrediente = i.idIngrediente
 JOIN
     partecipanti p ON s.idSessione = p.idSessione
 GROUP BY
+    s.idSessione,
+    r.nome,
     i.idIngrediente,
     i.nome;
+
 
