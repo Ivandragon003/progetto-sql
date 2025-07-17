@@ -230,7 +230,7 @@ DECLARE
 BEGIN
   
     SELECT idCorsoCucina INTO corso_sessione
-    FROM Sessione
+    FROM sessione
     WHERE idSessione = NEW.idSessione;
 
     IF NOT EXISTS (
