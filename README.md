@@ -8,7 +8,7 @@ NOTA: Sono state create prima le tabelle senza alcuna FK (Foreign Key)
 
 1.1 	Creazione tabella "ristorante"
 
-- A partitaIva è stata aggiunta una clausola CHECK per garantire la lunghezza esatta di 11 cifre.
+- A partitaIva è stata aggiunta una clausola CHECK per garantire la lunghezzaesatta di 11 cifre.
 - A stelleMichelin è stata aggiunta una clausola CHECK che permette solo valori tra 0 e 3.
 - È stata aggiunta una clausola UNIQUE su (partitaIva, nome) per evitare ristoranti duplicati con stessa partiva IVA e nome.
 
@@ -28,9 +28,9 @@ NOTA: Sono state create prima le tabelle senza alcuna FK (Foreign Key)
 
 1.6 	Creazione tabella "corsoCucina"
 
-- È stata aggiunta una clausola CHECK sul prezzo la quale assicuri che il prezzo di un corso di cucina non sia minore di 0.
-- È stata aggiunta una clausola CHECK su numeroPosti la quale assicuri che sia maggiore di 0.  
-- È stata aggiunta una clausola CHECK la quale assicura che la data di inizio di un corso sia minore della data di fine.
+- È stata aggiunta una clausola CHECK sul prezzo per garantire che il prezzo di un corso di cucina sia sempre maggiore di 0.
+- È stata aggiunta una clausola CHECK su numeroPosti  per garantire  che sia maggiore di 0.  
+- È stata aggiunta una clausola CHECK per garantire che la data di inizio di un corso sia minore della data di fine.
 - È stata aggiunta una clausola UNIQUE su (nomeCorso, dataInizioCorso, dataFineCorso) per evitare corsi di cucina con stesso nome, stessa data di inizio e di fine.
 
 
@@ -44,7 +44,7 @@ NOTA: Sono state create prima le tabelle senza alcuna FK (Foreign Key)
 
 1.8 	Creazione tabella "iscritto"
 
--È stata aggiunta una clausola CHECK su votiAvuti la quale assicuri che i voti avuti siano maggiore o uguali a 0 e minori o uguali a 10.
+-È stata aggiunta una clausola CHECK su votiAvuti per garantir che i voti avuti siano compresi tra 0 e 10 .
 
 
 
@@ -54,9 +54,9 @@ NOTA: Sono state create prima le tabelle senza alcuna FK (Foreign Key)
 
 1.10 	Creazione tabella "sessione"
 
-- È stata aggiunta una clausola CHECK su cap la quale assicuri che il CAP abbia dimensione 5 e che siano inseriti solo numeri.
-- È stata aggiunta una clausola CHECK su numeroPosti la quale assicuri che il numero di posti abbiano valore NULL o maggiore di 0.
-- È stata aggiunta una clausola CHECK su tipo la quale assicura che se il tipo di sessione è 'online', allora l'attributo 'piattaformaStreaming' non può essere NULL, mentre via, citta, cap, numeroPosti e idRicetta siano NULL; se il ipo di sessione è 'inPresenza', allora via, citta, cap, numeroPosti e idRicetta non possono essere NULL, mentre l'attributo 'piattaformaStreaming' sarà NULL;
+- È stata aggiunta una clausola CHECK sul CAP  per garantir che il CAP abbia dimensione 5 e che siano inseriti solo numeri.
+- È stata aggiunta una clausola CHECK su numeroPosti  per garantir che il numero di posti abbiano valore NULL o maggiore di 0.
+- È stata aggiunta una clausola CHECK su tipo  per garantir che se il tipo di sessione è 'online', allora l'attributo 'piattaformaStreaming' non può essere NULL, mentre via, citta, cap, numeroPosti e idRicetta siano NULL; se il ipo di sessione è 'inPresenza', allora via, citta, cap, numeroPosti e idRicetta non possono essere NULL, mentre l'attributo 'piattaformaStreaming' sarà NULL;
 - È stata aggiunta una clausola CHECK la quale assicura che la data di inizio di una sessione sia minore della data di fine.
 
 
@@ -71,7 +71,7 @@ NOTA: Sono state create prima le tabelle senza alcuna FK (Foreign Key)
 
 
 1.14 	Creazione tabella "usa"
-- È stata aggiunta una clausola CHECK su quantita la quale assicura che la quantità di un ingredienta sia maggiore di 0; 
+- È stata aggiunta una clausola CHECK su quantita  per garantir che la quantità di un ingredienta sia maggiore di 0; 
 
 
 
@@ -116,7 +116,7 @@ NOTA: Sono state create prima le tabelle senza alcuna FK (Foreign Key)
 
 -La funzione serve a garantire che ogni sessione venga programmata in un periodo compreso tra la data di inizio e la data di fine del corso a cui appartiene.
 
--Prima dell’inserimento o della modifica di una sessione nella tabella sessione, la funzione verifica che le date dataInizioSessione e dataFineSessione siano contenute nell’intervallo temporale stabilito per il corso corrispondente (dataInizioCorso, dataFineCorso). Se le date della sessione risultano al di fuori di questo intervallo, viene sollevata un’eccezione e l’operazione viene bloccata.
+-Prima dell’inserimento o della modifica di una sessione nella tabella sessione. Se le date della sessione risultano al di fuori di questo intervallo, viene sollevata un’eccezione e l’operazione viene bloccata.
 
 -Il trigger trg_checkIntervalloSessione si attiva prima di ogni INSERT o UPDATE sulla tabella sessione, per ciascuna riga. Ha il compito di far rispettare il vincolo temporale tra corso e sessioni.
 
@@ -248,24 +248,17 @@ Se il campo numeroPosti nella tabella corsoCucina risulta NULL (cioè non è sta
 
 3) Creazione della view
 
-3.1 iscrittiConfermatiCorso
-
--La View iscrittiConfermatiCorso serve a mostrare l'elenco degli utenti che risultano effettivamente iscritti a un corso di cucina, cioè coloro per cui lo stato dell'iscrizione risulta confermato (stato = TRUE).
-
--Per ogni utente iscritto, la vista mostra alcuni dati del corso di cucina e dati dell'utente. Per quanto riguarda il corso, vengono forniti: il codice del corso e il nome del corso.
-Invece, per dell'utente vengono forniti: il codice fiscale, il nome, il cognome e i voti ottenuti.
 
 
+3.1 VistaPartecipantiInPresenza
 
-3.2 VistaPartecipantiInPresenza
-
--La View VistaPartecipantiInPresenza serve a visualizzare l’elenco dei partecipanti confermati alle sessioni che si svolgono in presenza.
+-La View VistaPartecipantiInPresenza permette di visualizzare l’elenco dei partecipanti confermati alle sessioni che si svolgono in presenza.
 
 -Per ciascun partecipante, la vista mostra: il codice fiscale, il nome e il cognome. Inoltre della sessione vengono mostrati: identificativo, date di inizio e fine e il corso di cucina associato.
 
 
 
-3.3 QuantitaIngredientiRicetta
+3.2 QuantitaIngredientiRicetta
 
 -La View QuantitaIngredientiRicetta calcola la quantità totale necessaria di ciascun ingrediente per ogni sessione in presenza, tenendo conto del numero effettivo di partecipanti.
 
