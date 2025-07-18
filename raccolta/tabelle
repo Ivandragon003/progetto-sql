@@ -57,7 +57,7 @@ prezzo MONEY NOT NULL CHECK (prezzo >= '0'),
 numeroPosti INT CHECK(numeroPosti > 0 ) ,
 dataInizioCorso TIMESTAMP NOT NULL,
 dataFineCorso TIMESTAMP NOT NULL,
-CHECK (dataInizioCorso < dataFineCorso)
+CHECK (dataInizioCorso < dataFineCorso),
 UNIQUE (nomeCorso, dataInizioCorso, dataFineCorso)
 );
 
