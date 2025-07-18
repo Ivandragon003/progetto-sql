@@ -136,7 +136,17 @@ Se il campo numeroPosti nella tabella corsoCucina risulta NULL (cioè non è sta
 
 
 
-2.5 bloccoAdesioniOnline()
+2.5 checkPostiSessione()
+
+-La funzione serve a controllare se, per una sessione in presenza, ci siano ancora posti disponibili prima di accettare una nuova adesione.
+
+-La funzione recupera il numero massimo di posti disponibili per la sessione e conta quante adesioni confermate ci sono già. Se il numero di adesioni ha raggiunto o superato il limite, l’attributo stato dell’adesione in inserimento viene impostato a FALSE, altrimenti a TRUE. Il controllo viene effettuato solo per le sessioni in presenza.
+
+-Il trigger trg_checkPostiSessione si attiva prima di un'operazione di INSERT sulla tabella adesione ed esegue la funzione checkPostiSessione() per aggiornare correttamente lo stato dell’adesione.
+
+
+
+2.6 bloccoAdesioniOnline()
 
 -La funzione serve a garantire che gli utenti possano inviare richieste di adesione esclusivamente per sessioni in presenza, impedendo adesioni a sessioni online.
 
@@ -147,7 +157,7 @@ Se il campo numeroPosti nella tabella corsoCucina risulta NULL (cioè non è sta
 
 
 
-2.6 checkDataRichieste()
+2.7 checkDataRichieste()
 
 -La funzione serve a garantire che un utente possa inviare una richiesta di adesione solo prima dell’inizio della sessione a cui vuole partecipare.
 
@@ -158,7 +168,7 @@ Se il campo numeroPosti nella tabella corsoCucina risulta NULL (cioè non è sta
 
 
 
-2.7 checkPresenzaAdesioneSegue()
+2.8 checkPresenzaAdesioneSegue()
 
 -La funzione ha lo scopo di impedire che un utente venga registrato nella tabella segue come partecipante a una sessione se non ha prima ottenuto un’adesione valida (cioè accettata) alla stessa sessione.
 
@@ -168,7 +178,7 @@ Se il campo numeroPosti nella tabella corsoCucina risulta NULL (cioè non è sta
 
 
 
-2.8 checkIscrittoCorso()
+2.9 checkIscrittoCorso()
 
 -La funzione serve a garantire che un utente possa seguire una sessione o aderirvi solo se risulta formalmente iscritto al corso di cucina associato alla sessione stessa.
 
@@ -180,7 +190,7 @@ Se il campo numeroPosti nella tabella corsoCucina risulta NULL (cioè non è sta
 
 
 
-2.9 emailUnivocaPersona()
+2.10 emailUnivocaPersona()
 
 -La funzione serve a garantire l’unicità dell’email tra le tabelle chef e utente, impedendo che lo stesso indirizzo venga associato a persone diverse nel sistema.
 
@@ -192,7 +202,7 @@ Se il campo numeroPosti nella tabella corsoCucina risulta NULL (cioè non è sta
 
 
 
-2.10 checkCorsoChef()
+2.11 checkCorsoChef()
 
 -La funzione serve a impedire che un corso di cucina resti privo di uno chef. Viene utilizzata per garantire la continuità didattica del corso stesso.
 
@@ -202,7 +212,7 @@ Se il campo numeroPosti nella tabella corsoCucina risulta NULL (cioè non è sta
 
 
 
-2.11 checkCodFiscaleUnico()
+2.12 checkCodFiscaleUnico()
 
 -La funzione serve a garantire l’unicità del codice fiscale tra le tabelle chef e utente. In questo modo, si evita che una stessa persona venga registrata contemporaneamente in entrambe le tabelle con lo stesso codice fiscale.
 
@@ -214,7 +224,7 @@ Se il campo numeroPosti nella tabella corsoCucina risulta NULL (cioè non è sta
 
 
 
-2.12 checkConflittoSessioneChef()
+2.13 checkConflittoSessioneChef()
 
 -La funzione serve a verificare che uno chef non venga assegnato a due sessioni che si sovrappongono temporalmente, evitando quindi conflitti di orario tra sessioni dello stesso chef.
 
@@ -224,7 +234,7 @@ Se il campo numeroPosti nella tabella corsoCucina risulta NULL (cioè non è sta
 
 
 
-2.13 checkNumeroPostiSessione()
+2.14 checkNumeroPostiSessione()
 
 -La funzione serve a verificare che il numero di posti disponibili per una sessione non superi quello previsto dal corso di cucina corrispondente.
 
@@ -234,7 +244,7 @@ Se il campo numeroPosti nella tabella corsoCucina risulta NULL (cioè non è sta
 
 
 
-2.14 checkConflittoLuogoSessione()
+2.15 checkConflittoLuogoSessione()
 
 -La funzione serve a impedire che due sessioni in presenza si svolgano nello stesso luogo e nello stesso intervallo temporale, evitando sovrapposizioni logistiche.
 
