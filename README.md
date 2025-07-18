@@ -186,7 +186,8 @@ Se il campo numeroPosti nella tabella corsoCucina risulta NULL (cioè non è sta
 
 -Il trigger trg_checkSegueCorso si attiva prima di ogni INSERT o UPDATE sulla tabella segue, mentre il trigger trg_checkAdesioneCorso si attiva prima di ogni INSERT o UPDATE sulla tabella adesione. Entrambi eseguono la funzione checkIscrittoCorso(), assicurando che un utente possa partecipare a una sessione o seguirla solo se è effettivamente iscritto al corso corrispondente.
 
--L’uso della stessa funzione per due trigger diversi consente di evitare duplicazioni di codice, migliorando la manutenibilità e la chiarezza del progetto.)
+
+-L’uso della stessa funzione per due trigger diversi consente di evitare duplicazioni di codice, migliorando la manutenibilità e la chiarezza del progetto.
 
 
 
